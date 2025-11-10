@@ -1,134 +1,246 @@
-# Assignment
+# Functional Compiler for GCL
 
-This page provides the goals and guidelines for the assignment of the course 02141 - Computer Science Modelling.
-The individual tasks will be published throughout the course; see below for publication dates and deadlines.
+A comprehensive compiler toolchain written in F# for the Guarded Command Language (GCL), featuring parsing, compilation, interpretation, and static analysis capabilities.
 
-> **Please read this document carefully as it explains the goals and rules of the assignment. If you find some inconsistency or unclear point, please create a gitlab issue.**
+## Overview
 
-This document is structured as follows:
+This project implements a complete compiler and analysis framework for a variant of the Guarded Command Language (GCL). The toolchain includes multiple components that work together to parse, compile, execute, and analyze GCL programs. It was developed as part of the 02141 Computer Science Modelling course at DTU.
 
-- [Assignment](#assignment)
-  - [Goals](#goals)
-  - [Rules and Guidelines](#rules-and-guidelines)
-    - [Groups and Submissions](#groups-and-submissions)
-    - [Submissions](#submissions)
-    - [Code](#code)
-  - [Feedback](#feedback)
-  - [Evaluation](#evaluation)
-  - [Getting Started](#getting-started)
+### What is GCL?
 
+The Guarded Command Language is a programming language developed by Edsger Dijkstra for writing structured programs with non-deterministic control flow. This implementation supports a variant of GCL with features including:
 
-## Goals
+- Variable assignments and array operations
+- Conditional statements (`if-fi`)
+- Loop statements (`do-od`)
+- Guarded commands with non-deterministic choice
+- Arithmetic and boolean expressions
 
-The overall goal of the assignment is to build and use tools for running and analysing programs written in a variant of the Guarded Command Language (GCL); details of the considered language are described [here](gcl.md).
+For the complete language specification, see [gcl.md](gcl.md).
 
-That is, you will learn about the most common steps one encounters when developing a new programming language.
-You will also implement and use various tools that help programmers to write correct programs in that language.
-Some components of the assignment are present in [http://www.formalmethods.dk/fm4fun](http://www.formalmethods.dk/fm4fun).
+## Features
 
-The assignment is divided into seven tasks. Some of the tasks corresponds to a module of your tool, whereas others involve writing models for existing tools.
-We will publish the task description gradually according to the following schedule:
+The compiler toolchain consists of several integrated components:
 
-| TASK | Publication Date | Deadline |
-| --- | --- | --- |
-| 1 - Parser | February 27 | March 4 |
-| 2 - Compiler | March 5 | March 11 |
-| 3 - Interpreter | March 12 | March 18 |
-| 4 - Verification | March 22 | April 4 |
-| 5 - Security | April 8 | April 15 |
-| 6 - Sign analysis | April 19 | April 25 |
-| 7 - Model Checking | April 30 | May 6 |
+### 🔍 **Parser** (Task 1)
+- Lexical analysis and syntax parsing for GCL programs
+- Abstract Syntax Tree (AST) generation
+- Pretty printer for formatted code output
+- Syntax error detection and reporting
 
-The overall structure of the assignment is illustrated below, where green boxes are inputs and outputs of your tool; blue boxes represent components that you have to implement.
-Orange boxes represent tasks in which you will write models and use existing tools.
+### ⚙️ **Compiler** (Task 2)
+- Converts GCL programs to Program Graphs (PG)
+- Supports both deterministic and non-deterministic semantics
+- Outputs in DOT format for visualization
+- Program graph construction following formal methods
 
-![Structure of the Assignment](overview.png)
+### ▶️ **Interpreter** (Task 3)
+- Step-by-step program execution
+- Trace generation with complete execution sequences
+- Memory state tracking
+- Support for deterministic and non-deterministic execution
 
-For every task, you have to prepare *two submissions*: the *coding submission*, which is submitted as a group by pushing to your group's repository, and the *questionaire submission*, which is an *individualized* questionaire that you have to submit via DTU Learn. The individual task descriptions will clarify what needs to be handed in as part of the *coding submission* and what needs to be handed in as part of the *questionaire submission*.
+### 🔒 **Security Analysis** (Task 5)
+- Information flow analysis
+- Detection of confidential information leaks
+- Security property verification
 
-We briefly describe the aims of each task:
+### 🔢 **Sign Analysis** (Task 6)
+- Static analysis determining variable signs at program points
+- Detection of potential runtime errors (e.g., division by zero)
+- Abstract interpretation framework
 
-1. In [task 1](task1.md), you will implement a *parser* that takes a program in our new programming language and turns it into an abstract syntax tree (AST) - one of the main data structures used by the other components. To test your implementation, you will also implement a *pretty printer* (i.e. a code generator) that traverses the AST and outputs the original program in a nice format.
-2. In [task 2](task2.md), you will implement a *compiler* that takes the AST of a program and constructs its program graph (PG) - another data structure used for running and analyzing programs. To simplify debugging, you will also implement a *printer* that outputs a graphical representation of program graphs.
-3. In [task 3](task3.md), you will implement an *interpreter* that takes a program graph and an initial memory and computes the program's (complete) execution sequences when started on that memory.
-4. In tasks 4 - 7, you will use and implement tools that help programmers with writing correct programs:
-    - In [task 4](task4.md), you will be using a *program verifier* to show that various programs behave as intended.
-     - In [task 5](task5.md), you will implement another program analysis that checks whether your program leaks confidential information.
-    - In [task 6](task6.md), you will implement a *sign analysis* that determines the signs of variables at every point of a program's execution; such information can be used to detect bugs, such as a division by zero, before actually running the program.
-    - In [task 7](task7.md), you will be using a model checker to analyse properties of concurrent programs.
+### 🧮 **Calculator**
+- Simple arithmetic expression evaluator
+- Demonstrates basic parsing and evaluation techniques
 
+## Project Structure
 
-## Rules and Guidelines
-
-### Groups and Submissions
-
-- The assignment has been designed for individual submissions, i.e. the workload is adequate for completing the project alone.
-- You can form groups up to size 3 to support each other.
-    * The *strict* deadline for forming groups is Friday, 16 February, at 12:00 Copenhagen time.
-    * After the deadline, everyone who does not belong to a group will be assigned to a 1-person group.
-    * The group composition cannot be changed after the deadline. There will be no exception. This includes cases in which group members drop the course.
-    * If serious issues arise with your group, such as health issues or harassment, contact us ASAP.
-- All group members are responsible for the *coding submissions*. “My group members worked on this part” is not an excuse.
-
-### Submissions
-
-- You can submit the *coding submissions* and the *questionnaire submissions* in any order.
-- The *questionaire submissions* are **individual**, i.e. you must submit your own solutions via DTU learn.
-- You have to use your group's repository on DTU gitlab to work on the *coding submissions*
-    * If you do not know your group's repository, contact the teachers.
-    * If you have not used git before, you can find [tutorials online](https://git-scm.com/docs/gittutorial).
-- All solutions to the *coding submissions* must be handed in by comitting *and pushing* them to your group's git repository.
-- You can push to your group's repository as often as you want. We will consider the last push before each task's deadline as your *coding submission*.
-
-### Code
-
-- Your solutions must be implemented in F#. We expect you to be familiar with F# as covered in the course [02157 - Functional Programming](https://kurser.dtu.dk/course/02157), which is a prerequisite for this course.
-- You are allowed to add your own functions, types, files, etc. but ***do not modify any code in the existing files of the provided code framework unless it is explicitly allowed, e.g. by a comment of the form `// TODO: start here`.***
-- You have to implement your solutions within the code framework provided in this repository.
-- You have to implement the techniques presented in the teaching material.
-- You are allowed to add more files but do not forget to add them to your git repository.
-
-
-## Feedback
-
-We will *not* publish solutions of any assignment tasks.
-
-Instead, we encourage you to proactively seek feedback from the TAs and the teacher in class during lab days.
-
-We will also provide some feedback using an automated evaluation tool.
-
-## Evaluation
-
-Our environment gives you instant feedback and lets you compare your solution to a reference solution.
-
-We want to encourage you to design, implement, test, and analyze your code carefully and to be able to use the course tools for solving relevant problems.
-Hence, your final submissions will be checked by a more powerful evaluation tool.
-In other words: even if the instant feedback and reference solution do not reveal any errors, the final evaluation might still be able to spot some errors.
-We may also manually inspect your submissions.
-
-The assignment submissions contribute to the overall asssesment of the course. As a rule of thumb, you will pass with 50% of all tests passing in your *coding submissions*, and 50% of all questions answered correctly in the *questionaire submissions*. Better results contribute to a better final grade.
-
-
+```
+.
+├── code/                  # Main source code directory
+│   ├── src/
+│   │   ├── AST.fs        # Abstract Syntax Tree definitions
+│   │   ├── Parser.fs     # Parser implementation
+│   │   ├── Lexer.fsl     # Lexer specification
+│   │   ├── Grammar.fsy   # Grammar specification
+│   │   ├── Compiler.fs   # Compiler to Program Graphs
+│   │   ├── Interpreter.fs # Program interpreter
+│   │   ├── SecurityAnalysis.fs # Security analysis
+│   │   ├── SignAnalysis.fs     # Sign analysis
+│   │   ├── Calculator.fs # Arithmetic calculator
+│   │   ├── Types.fs      # Shared type definitions
+│   │   ├── Io.fs         # Input/output types
+│   │   └── Program.fs    # Entry point
+│   └── gcl.fsproj        # F# project file
+├── gcl.md                # GCL language specification
+├── overview.png          # Architecture diagram
+└── README.md             # This file
+```
 
 ## Getting Started
 
-For each task, all relevant information and code will be found in your group's repository. At the moment, most tasks are not published yet. It is thus important that you frequently update your repository such that you can see the latest version of the tasks, code skeletons, and potential patches.
+### Prerequisites
 
-You must use DTU GitLab via SSH.
-If you have not already added an SSH key to your GitLab profile, please first follow the steps [here](ssh.md).
+- **.NET 8.0 SDK** or later
+  - **Windows**: [Download from Microsoft](https://dotnet.microsoft.com/en-us/download)
+  - **macOS**: Install via Homebrew: `brew install dotnet-sdk`
+  - **Linux**: [Installation guide](https://fsharp.org/use/linux/)
 
-To update your repository, it then suffices to run the following script in this repository:
+Verify installation:
+```bash
+dotnet --version  # Should show 8.x.x
+```
 
-- MacOS, Linux: `./update.sh`
-- Windows: `update.ps1`
+### Installation
 
-The first time you run the update script, you might see the error message
-`error: No such remote: 'upstream'`.
-This is expected and does not mean that your update failed.
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd Functional-Compiler
+```
 
-To test whether you managed to update your repository at least once, you can check after running the update script whether the file [task0.md](task0.md) has been updated. That is, after the update the file should be different from the default text 
+2. Build the project:
+```bash
+cd code
+dotnet build
+```
 
-> _**This task has not yet been published.**_
+### Running the Compiler
 
-You can find further details about the code skeletons and the environment that you will work in [code/README.md](code/README.md).
+The compiler provides several commands for different analyses:
 
+```bash
+# Parse a GCL program
+dotnet run Parser '<input-json>'
+
+# Compile to program graph
+dotnet run Compiler '<input-json>'
+
+# Interpret a program
+dotnet run Interpreter '<input-json>'
+
+# Run sign analysis
+dotnet run Sign '<input-json>'
+
+# Run security analysis
+dotnet run Security '<input-json>'
+
+# Evaluate arithmetic expressions
+dotnet run Calculator '<input-json>'
+```
+
+### Using Inspectify (Recommended)
+
+The easiest way to interact with the compiler is through **Inspectify**, a web-based interface:
+
+```bash
+# Windows
+.\inspectify.ps1 --open
+
+# macOS/Linux
+./inspectify.sh --open
+```
+
+This will open a browser at `http://localhost:3000/` where you can:
+- Write and parse GCL programs
+- Visualize program graphs
+- Execute programs step-by-step
+- Run analyses interactively
+- Compare with reference implementations
+
+## Example Programs
+
+Here's a simple GCL program that computes the maximum of two numbers:
+
+```gcl
+if x >= y -> z := x
+[] y >= x -> z := y
+fi
+```
+
+This program uses guarded commands to non-deterministically choose the maximum value.
+
+## Development
+
+### Building from Source
+
+```bash
+cd code
+dotnet restore  # Restore dependencies
+dotnet build    # Compile the project
+```
+
+### File Types
+
+- **`.fs`** - F# source files
+- **`.fsl`** - FsLex lexer specifications
+- **`.fsy`** - FsYacc parser grammar specifications
+- **`.fsproj`** - F# project configuration
+
+### Key Technologies
+
+- **F#** - Primary programming language
+- **FsLexYacc** - Lexer and parser generator
+- **.NET 8.0** - Runtime platform
+- **System.Text.Json** - JSON serialization
+
+## Architecture
+
+The compiler follows a traditional multi-phase architecture:
+
+```
+Source Code (GCL)
+      ↓
+  [Lexer] → Tokens
+      ↓
+  [Parser] → Abstract Syntax Tree
+      ↓
+  [Compiler] → Program Graph
+      ↓
+  [Interpreter/Analyzer] → Results
+```
+
+Each component is modular and can be used independently or as part of the complete toolchain.
+
+## Documentation
+
+- **[gcl.md](gcl.md)** - Complete GCL language specification
+- **[code/README.md](code/README.md)** - Detailed build and development guide
+- **[ASSIGNMENT.md](ASSIGNMENT.md)** - Original assignment instructions
+- **Task files** (`task1.md` - `task7.md`) - Individual component specifications
+
+## Learning Resources
+
+This project demonstrates several computer science concepts:
+
+- **Compiler Construction**: Lexing, parsing, code generation
+- **Formal Methods**: Program graphs, operational semantics
+- **Static Analysis**: Abstract interpretation, data flow analysis
+- **Programming Languages**: Language design, semantics
+- **Functional Programming**: Type systems, pattern matching, immutability
+
+## Contributing
+
+This project was developed as an educational assignment. The codebase follows functional programming principles and F# best practices.
+
+### Code Structure Guidelines
+
+- Type definitions in `AST.fs` and `Types.fs`
+- Each analysis in its own module
+- Pure functional implementations preferred
+- Pattern matching for AST traversal
+
+## License
+
+Educational project for DTU Course 02141 - Computer Science Modelling.
+
+## Acknowledgments
+
+- Based on concepts from [FM4Fun](http://www.formalmethods.dk/fm4fun)
+- Implements techniques from formal methods literature
+- Developed for DTU's Computer Science Modelling course
+
+## Contact
+
+For questions about this project, please refer to the course materials or contact the course instructors.
